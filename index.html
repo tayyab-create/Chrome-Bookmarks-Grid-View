@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multi-Column Bookmarks - Chrome Extension</title>
+  <meta name="description" content="Browse your Chrome bookmarks in a beautiful multi-column grid layout. Lightning-fast search, keyboard shortcuts, and fully customizable.">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      overflow-x: hidden;
+    }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 100px 20px;
+      text-align: center;
+      min-height: 600px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hero h1 {
+      font-size: 48px;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+
+    .hero p {
+      font-size: 24px;
+      margin-bottom: 40px;
+      opacity: 0.95;
+      max-width: 700px;
+    }
+
+    .cta-button {
+      display: inline-block;
+      padding: 16px 40px;
+      background: white;
+      color: #667eea;
+      text-decoration: none;
+      border-radius: 50px;
+      font-size: 18px;
+      font-weight: 600;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .cta-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .badges {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      padding: 6px 12px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      font-size: 14px;
+    }
+
+    /* Problem Section */
+    .problem {
+      padding: 80px 20px;
+      background: #f8f9fa;
+      text-align: center;
+    }
+
+    .problem h2 {
+      font-size: 36px;
+      margin-bottom: 40px;
+      color: #333;
+    }
+
+    .problem-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .problem-item {
+      padding: 30px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .problem-icon {
+      font-size: 48px;
+      margin-bottom: 15px;
+    }
+
+    .problem-item h3 {
+      font-size: 20px;
+      margin-bottom: 10px;
+      color: #ea4335;
+    }
+
+    /* Features Section */
+    .features {
+      padding: 80px 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .features h2 {
+      font-size: 36px;
+      text-align: center;
+      margin-bottom: 60px;
+      color: #333;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 40px;
+    }
+
+    .feature {
+      text-align: center;
+    }
+
+    .feature-icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+    }
+
+    .feature h3 {
+      font-size: 24px;
+      margin-bottom: 15px;
+      color: #667eea;
+    }
+
+    .feature p {
+      color: #666;
+      line-height: 1.8;
+    }
+
+    /* Screenshot Section */
+    .screenshot {
+      padding: 80px 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      text-align: center;
+      color: white;
+    }
+
+    .screenshot h2 {
+      font-size: 36px;
+      margin-bottom: 40px;
+    }
+
+    .screenshot-demo {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .demo-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+
+    .demo-search {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-right: 10px;
+    }
+
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .demo-item {
+      padding: 12px;
+      background: #f8f9fa;
+      border-radius: 6px;
+      font-size: 14px;
+      color: #333;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .demo-item.folder {
+      background: #e8f0fe;
+    }
+
+    /* Installation Section */
+    .installation {
+      padding: 80px 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .installation h2 {
+      font-size: 36px;
+      text-align: center;
+      margin-bottom: 40px;
+      color: #333;
+    }
+
+    .steps {
+      counter-reset: step;
+    }
+
+    .step {
+      padding: 30px;
+      background: #f8f9fa;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      position: relative;
+      padding-left: 80px;
+    }
+
+    .step::before {
+      counter-increment: step;
+      content: counter(step);
+      position: absolute;
+      left: 30px;
+      top: 30px;
+      width: 40px;
+      height: 40px;
+      background: #667eea;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .step h3 {
+      font-size: 20px;
+      margin-bottom: 10px;
+      color: #667eea;
+    }
+
+    .step p {
+      color: #666;
+    }
+
+    /* CTA Section */
+    .cta-section {
+      padding: 80px 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      text-align: center;
+      color: white;
+    }
+
+    .cta-section h2 {
+      font-size: 36px;
+      margin-bottom: 20px;
+    }
+
+    .cta-section p {
+      font-size: 18px;
+      margin-bottom: 30px;
+      opacity: 0.9;
+    }
+
+    /* Footer */
+    footer {
+      padding: 40px 20px;
+      background: #2d3748;
+      color: white;
+      text-align: center;
+    }
+
+    footer a {
+      color: #667eea;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 36px;
+      }
+
+      .hero p {
+        font-size: 18px;
+      }
+
+      .demo-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .problem-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1>🔖 Multi-Column Bookmarks</h1>
+    <p>Browse your Chrome bookmarks in a beautiful multi-column grid layout</p>
+    <a href="https://github.com/yourusername/multi-column-bookmarks/releases" class="cta-button">
+      Download Now - It's Free!
+    </a>
+    <div class="badges">
+      <span class="badge">✨ Version 1.3</span>
+      <span class="badge">⚡ Lightning Fast</span>
+      <span class="badge">🎨 Fully Customizable</span>
+      <span class="badge">⌨️ Keyboard Shortcuts</span>
+    </div>
+  </section>
+
+  <!-- Problem Section -->
+  <section class="problem">
+    <h2>Tired of Endless Scrolling?</h2>
+    <div class="problem-grid">
+      <div class="problem-item">
+        <div class="problem-icon">😫</div>
+        <h3>Single Column Hell</h3>
+        <p>Chrome's native bookmarks show one narrow column, forcing you to scroll forever</p>
+      </div>
+      <div class="problem-item">
+        <div class="problem-icon">🔍</div>
+        <h3>Hard to Find</h3>
+        <p>With hundreds of bookmarks, finding what you need takes too many clicks</p>
+      </div>
+      <div class="problem-item">
+        <div class="problem-icon">💻</div>
+        <h3>Wasted Space</h3>
+        <p>Modern screens are wide, but Chrome's bookmarks don't take advantage</p>
+      </div>
+      <div class="problem-item">
+        <div class="problem-icon">🐌</div>
+        <h3>Slow Workflow</h3>
+        <p>Mouse-only navigation slows down your browsing productivity</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features">
+    <h2>✨ Features That Make a Difference</h2>
+    <div class="feature-grid">
+      <div class="feature">
+        <div class="feature-icon">📊</div>
+        <h3>Multi-Column Grid</h3>
+        <p>See 2-5 columns of bookmarks at once. Browse 5x more bookmarks without scrolling.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🔍</div>
+        <h3>Instant Search</h3>
+        <p>Type to filter through all your bookmarks instantly. Search by title or URL.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">⌨️</div>
+        <h3>Keyboard Shortcuts</h3>
+        <p>Ctrl+Shift+B to open, Ctrl+Shift+F to search. Full keyboard navigation support.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🎨</div>
+        <h3>Fully Customizable</h3>
+        <p>Light/dark themes, custom colors, adjustable sizes. Make it yours.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">📁</div>
+        <h3>Smart Navigation</h3>
+        <p>Click folders to browse, breadcrumb navigation to go back. Intuitive and fast.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">💾</div>
+        <h3>Cloud Sync</h3>
+        <p>All your settings sync across devices automatically via Chrome sync.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Screenshot Section -->
+  <section class="screenshot">
+    <h2>See It In Action</h2>
+    <div class="screenshot-demo">
+      <div class="demo-header">
+        <input type="text" class="demo-search" placeholder="Search bookmarks..." disabled>
+        <span>Columns: 3 ⟳ ⚙️</span>
+      </div>
+      <div style="padding: 8px; background: #f0f0f0; border-radius: 4px; font-size: 12px; color: #666; margin-bottom: 10px;">
+        🏠 Home › Work Projects › Client Sites
+      </div>
+      <div class="demo-grid">
+        <div class="demo-item folder">📁 Documentation</div>
+        <div class="demo-item folder">📁 Design Assets</div>
+        <div class="demo-item folder">📁 Staging</div>
+        <div class="demo-item">🔖 Project Alpha</div>
+        <div class="demo-item">🔖 Dashboard UI</div>
+        <div class="demo-item">🔖 Analytics</div>
+        <div class="demo-item">🔖 Client Portal</div>
+        <div class="demo-item">🔖 Style Guide</div>
+        <div class="demo-item">🔖 Reports</div>
+      </div>
+      <div style="text-align: center; padding: 10px; color: #666; font-size: 12px; margin-top: 10px;">
+        127 bookmarks
+      </div>
+    </div>
+  </section>
+
+  <!-- Installation Section -->
+  <section class="installation">
+    <h2>Get Started in 30 Seconds</h2>
+    <div class="steps">
+      <div class="step">
+        <h3>Download</h3>
+        <p>Click the button above to download the latest release</p>
+      </div>
+      <div class="step">
+        <h3>Extract</h3>
+        <p>Unzip the downloaded file to a folder on your computer</p>
+      </div>
+      <div class="step">
+        <h3>Install</h3>
+        <p>Go to chrome://extensions, enable Developer mode, and click "Load unpacked"</p>
+      </div>
+      <div class="step">
+        <h3>Enjoy!</h3>
+        <p>Click the extension icon and start browsing your bookmarks in style</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <h2>Ready to Transform Your Bookmarks?</h2>
+    <p>Join thousands of users who've upgraded their bookmark browsing</p>
+    <a href="https://github.com/yourusername/multi-column-bookmarks" class="cta-button">
+      View on GitHub
+    </a>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2026 Multi-Column Bookmarks. Open source and free forever.</p>
+    <div class="footer-links">
+      <a href="https://github.com/yourusername/multi-column-bookmarks">GitHub</a>
+      <a href="https://github.com/yourusername/multi-column-bookmarks/issues">Report Issue</a>
+      <a href="https://github.com/yourusername/multi-column-bookmarks/blob/main/README_GITHUB.md">Documentation</a>
+      <a href="https://github.com/yourusername/multi-column-bookmarks/blob/main/LICENSE">License</a>
+    </div>
+  </footer>
+</body>
+</html>
